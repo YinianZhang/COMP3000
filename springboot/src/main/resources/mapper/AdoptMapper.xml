@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.AdoptMapper">
+
+    <sql id="Base_Column_List">
+        aid,user_id,pet_id,atime,astatus
+    </sql>
+
+    <select id="selectAll" resultType="com.example.entity.Adopt">
+        select adopt.*, user.name as userName, pet.img as petImg, pet.name as petName
+        from adopt
+        left join user on adopt.user_id = user.uid
+        left join pet on adopt.pet_id = pet.pid
+        <where>
+            <if test="aid != null"> and aid= #{aid}</if>
+            <if test="petId != null"> and pet_id = #{petId}</if>
+            <if test="astatus != null"> and astatus = #{astatus}</if>
+        </where>
+        order by aid desc
+    </select>
+
+    <select id="selectById" resultType="com.example.entity.Adopt">
+        select
+        <include refid="Base_Column_List" />
+        from adopt
+        where aid = #{aid}
+    </select>
+
+    <delete id="deleteById">
+        delete from adopt
+        where  aid = #{aid}
+    </delete>
+
+    <insert id="insert" parameterType="com.example.entity.Adopt" useGeneratedKeys="true">
+        insert into adopt
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="aid != null">aid,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="petId != null">pet_id,</if>
+            <if test="atime != null">atime,</if>
+            <if test="astatus != null">astatus,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="aid != null">#{aid},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="petId != null">#{petId},</if>
+            <if test="atime != null">#{atime},</if>
+            <if test="astatus != null">#{astatus},</if>
+        </trim>
+    </insert>
+
+    <update id="updateById" parameterType="com.example.entity.Adopt">
+        update pet
+        <set>
+            <if test="astatus != null">
+                status = #{astatus},
+            </if>
+        </set>
+        where pid = #{petId}
+    </update>
+    <update id="updateById1" parameterType="com.example.entity.Adopt">
+        update adopt
+        <set>
+            <if test="astatus != null">
+                astatus = #{astatus},
+            </if>
+        </set>
+        where aid = #{aid}
+    </update>
+</mapper>

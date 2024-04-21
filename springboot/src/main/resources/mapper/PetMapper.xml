@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.PetMapper">
+
+    <sql id="Base_Column_List">
+        pid,img,name,sex,age,type,status,intro
+    </sql>
+
+    <select id="selectAll" resultType="com.example.entity.Pet">
+        select
+        <include refid="Base_Column_List" />
+        from pet
+        <where>
+            <if test="pid != null"> and pid= #{pid}</if>
+            <if test="img != null"> and img= #{img}</if>
+            <if test="name != null"> and name like concat('%', #{name}, '%')</if>
+            <if test="sex != null"> and sex= #{sex}</if>
+            <if test="age != null"> and age= #{age}</if>
+            <if test="type != null"> and type= #{type}</if>
+            <if test="status != null"> and status= #{status}</if>
+            <if test="intro != null"> and intro= #{intro}</if>
+        </where>
+        order by pid desc
+    </select>
+
+    <select id="selectById" resultType="com.example.entity.Pet">
+        select
+        <include refid="Base_Column_List" />
+        from pet
+        where pid = #{pid}
+    </select>
+
+    <delete id="deleteById">
+        delete from pet
+        where  pid = #{pid}
+    </delete>
+
+    <insert id="insert" parameterType="com.example.entity.Pet" useGeneratedKeys="true">
+        insert into pet
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pid != null">pid,</if>
+            <if test="img != null">img,</if>
+            <if test="name != null">name,</if>
+            <if test="sex != null">sex,</if>
+            <if test="age != null">age,</if>
+            <if test="type != null">type,</if>
+            <if test="status != null">status,</if>
+            <if test="intro != null">intro,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="pid != null">#{pid},</if>
+            <if test="img != null">#{img},</if>
+            <if test="name != null">#{name},</if>
+            <if test="sex != null">#{sex},</if>
+            <if test="age != null">#{age},</if>
+            <if test="type != null">#{type},</if>
+            <if test="status != null">#{status},</if>
+            <if test="intro != null">#{intro},</if>
+        </trim>
+    </insert>
+
+    <update id="updateById" parameterType="com.example.entity.Pet">
+        update pet
+        <set>
+            <if test="img != null">
+                img = #{img},
+            </if>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="sex != null">
+                sex = #{sex},
+            </if>
+            <if test="age != null">
+                age = #{age},
+            </if>
+            <if test="type != null">
+                type = #{type},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="intro != null">
+                intro = #{intro},
+            </if>
+        </set>
+        where pid = #{pid}
+    </update>
+
+</mapper>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.GoodsMapper">
+
+    <sql id="Base_Column_List">
+        gid,name,gimg,price,numb
+    </sql>
+
+    <select id="selectAll" resultType="com.example.entity.Goods">
+        select
+        <include refid="Base_Column_List" />
+        from goods
+        <where>
+            <if test="gid != null"> and gid= #{gid}</if>
+            <if test="name != null"> and name like concat('%', #{name}, '%')</if>
+        </where>
+        order by gid desc
+    </select>
+
+    <select id="selectById" resultType="com.example.entity.Goods">
+        select
+        <include refid="Base_Column_List" />
+        from goods
+        where gid = #{gid}
+    </select>
+
+    <delete id="deleteById">
+        delete from goods
+        where  gid = #{gid}
+    </delete>
+
+    <insert id="insert" parameterType="com.example.entity.Goods" useGeneratedKeys="true">
+        insert into goods
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="gid != null">gid,</if>
+            <if test="name != null">name,</if>
+            <if test="gimg != null">gimg,</if>
+            <if test="price != null">price,</if>
+            <if test="numb != null">numb,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="gid != null">#{gid},</if>
+            <if test="name != null">#{name},</if>
+            <if test="gimg != null">#{gimg},</if>
+            <if test="price != null">#{price},</if>
+            <if test="numb != null">#{numb},</if>
+        </trim>
+    </insert>
+
+    <update id="updateById" parameterType="com.example.entity.Goods">
+        update goods
+        <set>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="gimg != null">
+                gimg = #{gimg},
+            </if>
+            <if test="price != null">
+                price = #{price},
+            </if>
+            <if test="numb != null">
+                numb = #{numb},
+            </if>
+        </set>
+        where gid = #{gid}
+    </update>
+
+</mapper>

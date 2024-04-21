@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.FosterMapper">
+    <resultMap id="FosterResult" type="com.example.entity.Foster">
+        <!-- FID -->
+        <result property="fid" column="fid"/>
+        <!-- User ID -->
+        <result property="userId" column="user_id"/>
+        <!-- Pet name -->
+        <result property="pet_name" column="pet_name"/>
+        <!-- Pet photo -->
+        <result property="photo" column="photo"/>
+        <!-- Foster time -->
+        <result property="ftime" column="ftime"/>
+        <!-- Foster days -->
+        <result property="days" column="days"/>
+        <!-- Foster service -->
+        <result property="service" column="service"/>
+        <!-- Foster status -->
+        <result property="status" column="status"/>
+        <!-- Foster room id -->
+        <result property="room_id" column="room_id"/>
+        <!-- Foster spend -->
+        <result property="spend" column="spend"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        fid,user_id,pet_name,photo,ftime,days,service,status,room_id,spend
+    </sql>
+    <select id="selectAll1" resultType="com.example.entity.Foster" resultMap="FosterResult">
+        select foster.*,user.username as userName  from foster  left join user on foster.user_id = user.uid
+    </select>
+    <select id="selectAllByUserId" resultType="com.example.entity.Foster" resultMap="FosterResult">
+        select foster.*,user.username as userName  from foster  left join user on foster.user_id = user.uid where user_id = #{userId}
+    </select>
+    <select id="selectAll" resultType="com.example.entity.Foster"  resultMap="FosterResult">
+        select foster.*, user.username as userName
+        from foster
+        left join user on foster.user_id = user.uid
+        <where>
+            <if test="fid != null"> and fid= #{fid}</if>
+            <if test="status != null"> and foster.status = #{status}</if>
+            <if test="userId != null"> and foster.user_id = #{userId}</if>
+        </where>
+        order by fid desc
+    </select>
+    <select id="selectRoomIds" resultType="java.lang.Integer">
+        SELECT room_id FROM foster where status = 'WaitingFoster' or status = 'Fostering'
+    </select>
+    <select id="selectById" resultType="com.example.entity.Foster">
+        select
+        <include refid="Base_Column_List" />
+        from foster
+        where fid = #{fid}
+    </select>
+
+    <delete id="deleteById">
+        delete from foster
+        where  fid = #{fid}
+    </delete>
+    <select id="selectByNameAndUser"  resultMap="FosterResult">
+        select
+            *
+        from foster left join user on foster.user_id = user.uid
+        where pet_name like #{param1}
+          and user_id = #{param2}
+    </select>
+    <select id="selectByUserId"  resultMap="FosterResult">
+        select
+            *
+        from foster left join user on foster.user_id = user.uid
+        where pet_name like #{petName}
+
+    </select>
+    <insert id="insert1" parameterType="com.example.entity.Foster" useGeneratedKeys="true">
+        insert into foster(fid, user_id, pet_name, photo, ftime, days, service, status, room_id, spend) VALUES (
+                                                                                                                   #{fid},
+                                                                                                                   #{userId},
+                                                                                                                   #{pet_name},
+                                                                                                                   #{photo},
+                                                                                                                   #{ftime},
+                                                                                                                   #{days},
+                                                                                                                   #{service},
+                                                                                                                   #{status},
+                                                                                                                   #{room_id},
+                                                                                                                   #{spend}
+                                                                                                               )
+    </insert>
+    <update id="updateById" parameterType="com.example.entity.Foster">
+        update foster
+        <set>
+            <if test="userId != null">
+                user_id = #{userId},
+            </if>
+            <if test="pet_name != null">
+                pet_name = #{pet_name},
+            </if>
+            <if test="photo != null">
+                photo = #{photo},
+            </if>
+            <if test="ftime != null">
+                ftime = #{ftime},
+            </if>
+            <if test="days != null">
+                days = #{days},
+            </if>
+            <if test="service != null">
+                service = #{service},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="room_id != null">
+                room_id = #{room_id},
+            </if>
+            <if test="spend != null">
+                spend = #{spend},
+            </if>
+        </set>
+        where fid = #{fid}
+    </update>
+
+</mapper>
